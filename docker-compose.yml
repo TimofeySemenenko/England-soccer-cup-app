@@ -1,0 +1,67 @@
+version: '3'
+services:
+
+  #PHP Services
+  app-EnglandSoccerCup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: app-EnglandSoccerCup
+    restart: unless-stopped
+    tty: true
+    environment:
+      #поменять при сборке
+      SERVICE_NAME: app-EnglandSoccerCup
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  #Nginx Services
+  webserver-EnglandSoccerCup:
+    image: nginx:alpine
+    #поменять при сборке
+    container_name: webserver-EnglandSoccerCup
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  #MySQL Services
+  db-EnglandSoccerCup:
+    image: mysql:5.7.22
+    container_name: db-EnglandSoccerCup
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      #поменять при сборке
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD: abrakadabra
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
