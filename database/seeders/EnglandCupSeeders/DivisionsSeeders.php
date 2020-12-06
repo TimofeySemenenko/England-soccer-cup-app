@@ -4,6 +4,7 @@
 namespace Database\Seeders\EnglandCupSeeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class DivisionsSeeders
