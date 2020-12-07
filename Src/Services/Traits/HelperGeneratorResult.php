@@ -3,8 +3,6 @@
 
 namespace EnglandSoccerCup\Services\Traits;
 
-use function EnglandSoccerCup\Services\Generator\teamInTour;
-
 /**
  * Trait HelperGeneratorResult
  * @package EnglandSoccerCup\Services\Traits
