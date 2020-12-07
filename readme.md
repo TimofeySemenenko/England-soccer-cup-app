@@ -1,31 +1,18 @@
-# Laravel PHP Framework for Eset with   Docker container
+# Генератор футбольных матчей
 
-### Work with (php-fpm7.1, Nginx,  Mysql5.7.*, docker)
+## Описания решения задачи 
+- Разработано приложение, которое случайным образом подбирает все возможные комбинации пар соперников исключая повторы. Каждая команда имеет 7 игр и может играть их, как дома, так и на выезде последовательность определяет алгоритм кругового турнира. У каждой команды обозначены маркеры или **H**(играла дома) или **W**(играла на выезде), каждая игра идет до победы победитель получает 3 очка.
 
-- Clone your fork into the ~/Sites/laravel folder
- `git clone git@github.com:esetnod32-russia/eset-laravel.git .`
+###  Какие технологии были использованы и почему? (php-fpm7.1, Nginx,  Mysql5.7.*, docker),
+- php-fpm и Nginx по тому что через менеджер процессов fpm по сокету выдает приличное уменьшение скорости.
+- Mysql5.7.*(Percona) - для быстрой работы приложения нужно постоянно ходить в базу за данными которые очень часто предоставлять пользователю, а так же обновлять(реже) и добавлять новые записи, Mysql на select быстрая, а выборок из базы у нас большее количество.
+- Docker для локальной разработки и продакшен окружения.
+- phpUnit для функционального и модульного тестирования.
 
-- Install Docker on the local machine (Windows - https://docs.docker.com/compose/install/) for (MacOs - https://docs.docker.com/compose/install/) for (Linux - https://docs.docker.com/compose/install/)
-
-- Move to 
- `cd eset-laravel` 
-
-- Then running the following command 
- `сp .env.example .env` 
-
-- If it works on successfully, running following command 
- `composer install`
-
-- Then running the following command 
- `docker-compose` 
-
-- If doesn't work on `docker-compose` check your local Docker else running the following command 
- `docker-compose up -d` 
- 
-- If is ok, running the following command
- `docker ps` 
-- You should see three Docker containers, it means You are on your way xxD
-
-- Then running the migrations `php artisan migrate` 
-
-- Please check your local-host  http://127.0.0.1/ as usual port-80
+### Архитектура приложения 
+- Основная директория - Sr, там расположено все что необходимо и достаточно для работы приложения, кроме миграций для БД.
+- Основной namespace - EnglandSoccerCup
+- Основные директории Http для контролеров приложения, директория Services содержит слой бизнес логики в нашем случае это генерация результатов и генерация всех возможных пар, директория Repositories служит для реализации которые позволяют работать с Eloquent,  Providers для подключения наших зависимостей и можно было использовать DI контейнеры, Models для мапинга полей сущностей.
+### Архитектура базы 
+-  Приложение использует 2 таблицы **division** для хранения команд и **result** для хранения результатов команд, таблица result имеет внешние ключи к таблице 
+division, дополнительно еще были созданы индексы на колонки которые ссылаются на   таблицу division.
