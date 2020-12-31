@@ -4,6 +4,7 @@
 namespace EnglandSoccerCup\Repositories\Divisions;
 
 use EnglandSoccerCup\Models\Divisions;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class RepositoryDivisions
@@ -12,15 +13,15 @@ use EnglandSoccerCup\Models\Divisions;
 final class RepositoryDivisions implements DivisionsContract
 {
     /**
-     * @var Divisions|null $divisions
+     * @var Divisions $divisions
      */
     private $divisions;
 
     /**
      * RepositoryDivisions constructor.
-     * @param ?Divisions $divisions
+     * @param Divisions $divisions
      */
-    public function __construct(?Divisions $divisions)
+    public function __construct(Divisions $divisions)
     {
         $this->divisions = $divisions;
     }
@@ -48,26 +49,26 @@ final class RepositoryDivisions implements DivisionsContract
 
     /**
      * @param Divisions $team
-     * @return Divisions
+     * @return Collection
      */
-    public function getByTeam(Divisions $team): \Illuminate\Database\Eloquent\Collection
+    public function getByTeam(Divisions $team): Collection
     {
         return $this->divisions::where('id', $team->id)->get();
     }
 
     /**
-     * @return Divisions
+     * @return Collection
      */
-    public function getAll(): \Illuminate\Database\Eloquent\Collection
+    public function getAll(): Collection
     {
         return $this->divisions::all();
     }
 
     /**
      * @param string $league
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function teamsByLeague(string $league): \Illuminate\Database\Eloquent\Collection
+    public function teamsByLeague(string $league): Collection
     {
         return $this->divisions::where('league_name', $league)->get();
     }

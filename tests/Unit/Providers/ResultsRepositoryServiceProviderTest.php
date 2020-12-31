@@ -28,7 +28,6 @@ class ResultsRepositoryServiceProviderTest extends TestCase
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
-        };
+        }
     }
-
 }

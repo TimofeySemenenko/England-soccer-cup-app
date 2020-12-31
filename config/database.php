@@ -82,7 +82,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => $DATABASE_URL,
+            'url' => env('DATABASE_URL', 'http://localhost'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'forge'),

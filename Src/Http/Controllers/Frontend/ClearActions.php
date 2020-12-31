@@ -7,6 +7,8 @@ use EnglandSoccerCup\Http\EnglandSoccerCupHomeController;
 use EnglandSoccerCup\Repositories\Results\ResultsContract;
 use EnglandSoccerCup\Repositories\Divisions\DivisionsContract;
 use EnglandSoccerCup\Services\Generator\GeneratorInterface;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 
 /**
  * Class ClearActions
@@ -29,23 +31,22 @@ class ClearActions extends EnglandSoccerCupHomeController
 
     /**
      * ClearActions constructor.
-     * @param ResultsContract|null $resultsContact
-     * @param DivisionsContract|null $divisionsContract
-     * @param GeneratorInterface|null $generator
+     * @param ResultsContract $resultsContact
+     * @param DivisionsContract $divisionsContract
+     * @param GeneratorInterface $generator
      */
     public function __construct(
-        ?ResultsContract $resultsContact,
-        ?DivisionsContract $divisionsContract,
-        ?GeneratorInterface $generator
-    )
-    {
+        ResultsContract $resultsContact,
+        DivisionsContract $divisionsContract,
+        GeneratorInterface $generator
+    ) {
         $this->generator = $generator;
         $this->resultsContact = $resultsContact;
         $this->divisionsContract = $divisionsContract;
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|
+     * @return Application|Factory|
      * \Illuminate\Contracts\View\View
      */
     public function truncate()
@@ -54,7 +55,11 @@ class ClearActions extends EnglandSoccerCupHomeController
         $divisions = $this->divisionsContract->getAll();
         $result = $this->resultsContact->getAll()->whereIn('tour', 'group');
         $championShip = $this->generator->map($result->whereIn('tour', 'group')->toArray(), $divisions, 'ChampionShip');
-        $premierLeague = $this->generator->map($result->whereIn('tour', 'group')->toArray(), $divisions, 'PremierLeague');
+        $premierLeague = $this->generator->map(
+            $result->whereIn('tour', 'group')->toArray(),
+            $divisions,
+            'PremierLeague'
+        );
 
         return view(
             'engcup.info',
@@ -71,7 +76,10 @@ class ClearActions extends EnglandSoccerCupHomeController
                 'semiFinal' => $result->whereIn('tour', 'semi-final'),
                 'final' => $result->whereIn('tour', 'final'),
                 'alert' => false,
-                'buttonPlayOff' => $result->whereIn('tour','group')->toArray()
+                'buttonPlayOff' => $result->whereIn(
+                    'tour',
+                    'group'
+                )->toArray()
             ]
         );
     }

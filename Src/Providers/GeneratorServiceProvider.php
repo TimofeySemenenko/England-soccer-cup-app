@@ -4,6 +4,8 @@
 namespace EnglandSoccerCup\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use EnglandSoccerCup\Services\Generator\ServiceGenerator;
+use EnglandSoccerCup\Services\Generator\GeneratorInterface;
 
 /**
  * Class GeneratorServiceProvider
@@ -13,15 +15,13 @@ class GeneratorServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-
     }
 
     public function register()
     {
         $this->app->bind(
-            'EnglandSoccerCup\Services\Generator\GeneratorInterface',
-            'EnglandSoccerCup\Services\Generator\ServiceGenerator'
+            GeneratorInterface::class,
+            ServiceGenerator::class
         );
     }
-
 }

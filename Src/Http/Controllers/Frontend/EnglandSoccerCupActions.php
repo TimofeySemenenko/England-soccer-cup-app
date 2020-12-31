@@ -7,6 +7,8 @@ use EnglandSoccerCup\Http\EnglandSoccerCupHomeController;
 use EnglandSoccerCup\Repositories\Results\ResultsContract;
 use EnglandSoccerCup\Repositories\Divisions\DivisionsContract;
 use EnglandSoccerCup\Services\Generator\GeneratorInterface;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 
 /**
  * Class EnglandSoccerCupActions
@@ -37,23 +39,30 @@ class EnglandSoccerCupActions extends EnglandSoccerCupHomeController
         ?ResultsContract $resultsContact,
         ?DivisionsContract $divisionsContract,
         ?GeneratorInterface $generator
-    )
-    {
+    ) {
         $this->generator = $generator;
         $this->resultsContacts = $resultsContact;
         $this->divisionsContract = $divisionsContract;
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|
+     * @return Application|Factory|
      * \Illuminate\Contracts\View\View
      */
     public function get()
     {
         $divisions = $this->divisionsContract->getAll();
         $result = $this->resultsContacts->getAll();
-        $championShip = $this->generator->map($result->whereIn('tour', 'group')->toArray(), $divisions, 'ChampionShip');
-        $premierLeague = $this->generator->map($result->whereIn('tour', 'group')->toArray(), $divisions, 'PremierLeague');
+        $championShip = $this->generator->map(
+            $result->whereIn('tour', 'group')->toArray(),
+            $divisions,
+            'ChampionShip'
+        );
+        $premierLeague = $this->generator->map(
+            $result->whereIn('tour', 'group')->toArray(),
+            $divisions,
+            'PremierLeague'
+        );
 
         return view(
             'engcup.info',
@@ -71,7 +80,10 @@ class EnglandSoccerCupActions extends EnglandSoccerCupHomeController
                 'final' => $result->whereIn('tour', 'final'),
                 'divisions' => $divisions,
                 'alert' => false,
-                'buttonPlayOff' => $result->whereIn('tour','group')->toArray()
+                'buttonPlayOff' => $result->whereIn(
+                    'tour',
+                    'group'
+                )->toArray()
             ]
         );
     }

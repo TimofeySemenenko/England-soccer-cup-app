@@ -27,5 +27,4 @@ class EnglandSoccerCupActionsTest extends TestCase
             $this->assertTrue(false);
         }
     }
-
 }

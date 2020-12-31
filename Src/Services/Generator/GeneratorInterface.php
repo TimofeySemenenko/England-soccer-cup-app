@@ -45,7 +45,7 @@ interface GeneratorInterface
      * @param Collection $results
      * @param Collection $division
      *
-     * @return Collection
+     * @return void
      */
     public function calculate(Collection $results, Collection $division): void;
 

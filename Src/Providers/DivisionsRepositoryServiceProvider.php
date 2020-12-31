@@ -4,6 +4,8 @@
 namespace EnglandSoccerCup\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use EnglandSoccerCup\Repositories\Divisions\DivisionsContract;
+use EnglandSoccerCup\Repositories\Divisions\RepositoryDivisions;
 
 /**
  * Class DivisionsRepositoryServiceProvider
@@ -13,14 +15,13 @@ class DivisionsRepositoryServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-
     }
 
     public function register()
     {
         $this->app->bind(
-            'EnglandSoccerCup\Repositories\Divisions\DivisionsContract',
-            'EnglandSoccerCup\Repositories\Divisions\RepositoryDivisions'
+            DivisionsContract::class,
+            RepositoryDivisions::class
         );
     }
 }
