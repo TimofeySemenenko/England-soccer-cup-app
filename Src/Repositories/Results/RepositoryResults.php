@@ -4,7 +4,8 @@
 namespace EnglandSoccerCup\Repositories\Results;
 
 use EnglandSoccerCup\Models\Results;
-use EnglandSoccerCup\Models\Divisions;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class RepositoryResults
@@ -28,9 +29,9 @@ final class RepositoryResults implements ResultsContract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
-    public function truncate(): \Illuminate\Database\Eloquent\Builder
+    public function truncate(): Builder
     {
         return $this->results::truncate();
     }
@@ -60,17 +61,17 @@ final class RepositoryResults implements ResultsContract
     /**
      * @param string $tour
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function resultByTour(string $tour): \Illuminate\Database\Eloquent\Collection
+    public function resultByTour(string $tour): Collection
     {
         return $this->results::where('tour', $tour)->get();
     }
 
     /**
-     * @return Results
+     * @return Collection
      */
-    public function getAll(): \Illuminate\Database\Eloquent\Collection
+    public function getAll(): Collection
     {
         return $this->results::all();
     }

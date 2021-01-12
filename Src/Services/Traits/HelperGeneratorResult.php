@@ -3,6 +3,8 @@
 
 namespace EnglandSoccerCup\Services\Traits;
 
+use Exception;
+
 /**
  * Trait HelperGeneratorResult
  * @package EnglandSoccerCup\Services\Traits
@@ -12,7 +14,7 @@ trait HelperGeneratorResult
     /**
      * @return array
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function simulationScoredGoals(): array
     {
@@ -33,14 +35,11 @@ trait HelperGeneratorResult
      * @param array $teams
      *
      * @return array
+     * @throws Exception
      */
     public function generateResult(array $teams): array
     {
-        /**
-         * @var array $result
-         */
         $result = [];
-        $totalTeam = $teams;
 
         if (count($teams) % 2 != 0) {
             array_push($teams, "bye");
@@ -50,7 +49,6 @@ trait HelperGeneratorResult
         $home = $teams;
 
         for ($i = 0; $i < count($home) + count($away) - 1; $i++) {
-
             for ($j = 0; $j < count($home); $j++) {
                 $scoredGoals = $this->simulationScoredGoals();
                 $result[$i][$j][$home[$j]] = $scoredGoals['home'];
@@ -64,15 +62,7 @@ trait HelperGeneratorResult
             }
         }
 
-//        foreach ($totalTeam as $key => $value) {
-//            $result[count($totalTeam) - 1][$key][$value] = 1;
-//        }
-
-        unset($away);
-        unset($home);
-        unset($array);
-        unset($teams);
-        unset($scoredGoals);
+        unset($away, $home, $array, $teams, $scoredGoals);
 
         return $result;
     }

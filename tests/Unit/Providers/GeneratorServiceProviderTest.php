@@ -28,7 +28,7 @@ class GeneratorServiceProviderTest extends TestCase
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
-        };
+        }
 
         unset($service);
     }

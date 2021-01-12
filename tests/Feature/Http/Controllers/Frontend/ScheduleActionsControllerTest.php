@@ -44,5 +44,4 @@ class ScheduleActionsControllerTest extends TestCase
             $this->assertTrue(false);
         }
     }
-
 }

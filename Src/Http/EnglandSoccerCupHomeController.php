@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 
 /**
  * Class EnglandSoccerCupHomeController
- * @package App\Isp\Http\Controllers
+ * @package EnglandSoccerCup\Http
  */
 class EnglandSoccerCupHomeController extends Controller
-{}
+{
+
+}
 

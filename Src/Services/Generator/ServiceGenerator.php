@@ -3,6 +3,7 @@
 
 namespace EnglandSoccerCup\Services\Generator;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use PharIo\Manifest\ElementCollectionException;
 use EnglandSoccerCup\Repositories\Results\ResultsContract;
@@ -18,25 +19,24 @@ final class ServiceGenerator implements GeneratorInterface
     use HelperGeneratorResult;
 
     /**
-     * @var ?DivisionsContract $resultsContact
+     * @var DivisionsContract $resultsContact
      */
     private $resultsContact;
     /**
-     * @var ?ResultsContract $divisionsContract
+     * @var ResultsContract $divisionsContract
      */
     private $divisionsContract;
 
     /**
      * ServiceGenerator constructor.
      *
-     * @param DivisionsContract|null $divisionsContract
-     * @param ResultsContract|null $resultsContact
+     * @param DivisionsContract $divisionsContract
+     * @param ResultsContract $resultsContact
      */
     public function __construct(
-        ?DivisionsContract $divisionsContract,
-        ?ResultsContract $resultsContact
-    )
-    {
+        DivisionsContract $divisionsContract,
+        ResultsContract $resultsContact
+    ) {
         $this->resultsContact = $resultsContact;
         $this->divisionsContract = $divisionsContract;
     }
@@ -60,12 +60,23 @@ final class ServiceGenerator implements GeneratorInterface
 
                 // teams and winners id
                 if (count($teams) == 1) {
-                    $homeTeam = $collection->firstWhere('team_name', array_shift($teams))->toArray();
+                    $homeTeam = $collection->firstWhere(
+                        'team_name',
+                        array_shift($teams)
+                    )->toArray();
                     $wayTeam = $homeTeam;
                     $winner = 0;
                 } else {
-                    $homeTeam = $collection->firstWhere('team_name', array_shift($teams))->toArray();
-                    $wayTeam = $collection->firstWhere('team_name', array_pop($teams))->toArray();
+                    $homeTeam = $collection->firstWhere(
+                        'team_name',
+                        array_shift($teams)
+                    )->toArray();
+
+                    $wayTeam = $collection->firstWhere(
+                        'team_name',
+                        array_pop($teams)
+                    )->toArray();
+
                     $winner = ($item[$homeTeam['team_name']] > $item[$wayTeam['team_name']]) ? $homeTeam['id'] :
                         $wayTeam['id'];
                 }
@@ -81,8 +92,7 @@ final class ServiceGenerator implements GeneratorInterface
             }
         }
 
-        unset($teams);
-        unset($result);
+        unset($teams, $result);
 
         return $res;
     }
@@ -91,7 +101,7 @@ final class ServiceGenerator implements GeneratorInterface
      * @param Collection $collection
      * @return array
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function generateQuarterFinal(Collection $collection): array
     {
@@ -101,13 +111,15 @@ final class ServiceGenerator implements GeneratorInterface
                 ->whereIn('league_name', 'ChampionShip')
                 ->sortByDesc('total')
                 ->take(4)
-                ->toArray());
+                ->toArray()
+        );
         $basketB = array_reverse(
             $collection
                 ->whereIn('league_name', 'PremierLeague')
                 ->sortByDesc('total')
                 ->take(4)
-                ->toArray());
+                ->toArray()
+        );
 
         foreach ($basketA as $item => $value) {
             $scored = $this->simulationScoredGoals();
@@ -121,8 +133,7 @@ final class ServiceGenerator implements GeneratorInterface
             ];
         }
 
-        unset($basketA);
-        unset($basketB);
+        unset($basketA, $basketB);
 
         return $pairs;
     }
@@ -132,7 +143,7 @@ final class ServiceGenerator implements GeneratorInterface
      * @param Collection $division
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function semiFinal(Collection $result, Collection $division): array
     {
@@ -142,10 +153,17 @@ final class ServiceGenerator implements GeneratorInterface
         $winners = array_chunk($data, 2);
 
         foreach ($winners as $item => $value) {
-            $firsTeam = $division->whereIn('id', array_shift($value)['winner'])
+            $firsTeam = $division->whereIn(
+                'id',
+                array_shift($value)['winner']
+            )
                 ->first()
                 ->toArray();
-            $secondTeam = $division->whereIn('id', array_pop($value)['winner'])
+
+            $secondTeam = $division->whereIn(
+                'id',
+                array_pop($value)['winner']
+            )
                 ->first()
                 ->toArray();
             $scored = $this->simulationScoredGoals();
@@ -161,10 +179,7 @@ final class ServiceGenerator implements GeneratorInterface
             ];
         }
 
-        unset($data);
-        unset($winners);
-        unset($firsTeam);
-        unset($secondTeam);
+        unset($data, $winners, $firsTeam, $secondTeam);
 
         return $res;
     }
@@ -174,19 +189,26 @@ final class ServiceGenerator implements GeneratorInterface
      * @param Collection $division
      *
      * @return array
+     * @throws Exception
      */
     public function final(Collection $result, Collection $division): array
     {
-        $res = [];
         $data = $result->keyBy('winner')->toArray();
         shuffle($data);
 
-        $firsTeam = $division->whereIn('id', array_shift($data)['winner'])
+        $firsTeam = $division->whereIn(
+            'id',
+            array_shift($data)['winner']
+        )
             ->first()
             ->toArray();
-        $secondTeam = $division->whereIn('id', array_pop($data)['winner'])
+        $secondTeam = $division->whereIn(
+            'id',
+            array_pop($data)['winner']
+        )
             ->first()
             ->toArray();
+
         $scored = $this->simulationScoredGoals();
 
         $res = [
@@ -200,10 +222,7 @@ final class ServiceGenerator implements GeneratorInterface
         ];
 
 
-        unset($data);
-        unset($winners);
-        unset($firsTeam);
-        unset($secondTeam);
+        unset($data, $winners, $firsTeam, $secondTeam);
 
         return $res;
     }
@@ -224,11 +243,7 @@ final class ServiceGenerator implements GeneratorInterface
                 }
             }
 
-            unset($res);
-            unset($results);
-            unset($division);
-            unset($resUpdate);
-
+            unset($res, $results, $division, $resUpdate);
         } catch (ElementCollectionException $errorException) {
             $errorException->getMessage();
         }
@@ -244,7 +259,10 @@ final class ServiceGenerator implements GeneratorInterface
     public function map(array $data, Collection $divisions, string $league): array
     {
         $pairs = [];
-        $divisions = $divisions->whereIn('league_name', $league)
+        $divisions = $divisions->whereIn(
+            'league_name',
+            $league
+        )
             ->sortByDesc('total')
             ->toArray();
 
@@ -259,7 +277,6 @@ final class ServiceGenerator implements GeneratorInterface
                     $pairs[$team['team_name']][] = $datum['scored_team_first'] . ' - '
                         . $datum['scored_team_second'] . '(W)';
                 }
-
             }
             $pairs[$team['team_name']]['total'] = $team['total'];
             array_splice($pairs[$team['team_name']], $i++, 0, '');

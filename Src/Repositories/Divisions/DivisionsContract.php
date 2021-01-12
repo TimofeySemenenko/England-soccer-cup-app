@@ -4,6 +4,7 @@
 namespace EnglandSoccerCup\Repositories\Divisions;
 
 use EnglandSoccerCup\Models\Divisions;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Interface DivisionsContract
@@ -23,18 +24,18 @@ interface DivisionsContract
     /**
      * @param Divisions $team
      *
-     * @return Divisions
+     * @return Collection
      */
-    public function getByTeam(Divisions $team): \Illuminate\Database\Eloquent\Collection;
+    public function getByTeam(Divisions $team): Collection;
 
     /**
-     * @return Divisions
+     * @return Collection
      */
-    public function getAll(): \Illuminate\Database\Eloquent\Collection;
+    public function getAll(): Collection;
 
     /**
      * @param string $league
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function teamsByLeague(string $league): \Illuminate\Database\Eloquent\Collection;
+    public function teamsByLeague(string $league): Collection;
 }

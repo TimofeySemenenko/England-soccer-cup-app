@@ -32,5 +32,8 @@ class Divisions extends Model
         'updated_at',
         'created_at'
     ];
-
+    /**
+     * @var mixed
+     */
+    private $id;
 }
